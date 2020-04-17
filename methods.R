@@ -21,3 +21,11 @@ hammingDistance <- function(string1, string2) {
   
   return(distance)
 }
+
+tableConstructor <- function() {
+  rows = c("A", "B", "C", "D", "E", "F", "G", "H")
+  plate = data.frame(matrix(ncol=16, nrow=8), row.names=rows)
+  colnames(plate) <- seq(1, 16)
+  plate[is.na(plate)] = FALSE
+  return(plate)
+}

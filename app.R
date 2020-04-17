@@ -8,19 +8,43 @@
 #
 
 library(shiny)
+library(DT)
+library(rhandsontable)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
+    
     tags$head(
-        tags$h1("Dawson Lab"),
+        tags$link( 
+            rel="stylesheet",
+            type="text/css",
+            href="style.css"
+        )
+    ),
+    tags$h1("Dawson Lab"),
+    tags$h4("Index Compatibility Checker"),
+    
+    fluidRow(
+        column(3, selectInput(inputId="kit", label="Kit", choices=c("TakaraBio", "Other"))),
+        column(2, selectInput(inputId="set", "Set", choices=c("A", "B", "C", "D"))),
+        column(3, selectInput(inputId="machine", label="Sequencer", choices=c("NextSeq", "MiSeq"))),
+    ),
+   
+    tableOutput("kit_indices"),
+    
+    sidebarPanel(
+        actionButton("check", "Check Index"),
+        hr(),
         
+        conditionalPanel(condition = "true", rHandsontableOutput("hot", width = 400))
     ),
     
-    tags$h1(tags$small("Index Compatability Checker")),
+    mainPanel(
+        rHandsontableOutput("collisions", width = 500)
+    ),
     
-    actionButton("check", "Check Compatibility")
-        )
+    downloadButton(outputId="download", label="Download")
+)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
