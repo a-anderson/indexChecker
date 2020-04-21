@@ -11,6 +11,11 @@ tableConstructor <- function() {
     return(plate)
 }
 
+selectIndex <- function(booleanDF) {
+    selectionMatrix <- which(booleanDF==TRUE, arr.ind=TRUE, useNames=TRUE)
+    return(selectionMatrix)
+}
+
 hammingDistance <- function(string1, string2) {
     # Calculate the hamming distance between 2 strings
     
@@ -39,14 +44,14 @@ checkIndex <- function(indexTable) {
     
     # loop over all indices
     for (i in 1:(numIndices-1)) {
-        index1 = trimws(indexTable[i,1])
+        index1 = toupper(trimws(indexTable[i,1]))
         
         # ignore blank entry
         if (nchar(index1) == 0 ) next
         
         for (j in (i+1):numIndices) {
             
-            index2 = trimws(indexTable[j,1])
+            index2 = toupper(trimws(indexTable[j,1]))
             
             # ignore blank entry
             if (nchar(index2) == 0 ) next
@@ -67,6 +72,10 @@ checkIndex <- function(indexTable) {
     return(outputDF)
 }
 
+# constants
+seqMachines <- c("NextSeq", "MiSeq", "HiSeq 2000/2500", 
+                 "HiSeq 3000/4000", "MiniSeq","NovaSeq")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
     
@@ -84,9 +93,12 @@ ui <- fluidPage(
     
     
     fluidRow(
-        column(3, selectInput(inputId="kit", label="Kit", choices=c("TakaraBio", "Other"))),
-        column(2, selectInput(inputId="set", "Set", choices=c("A", "B", "C", "D"))),
-        column(3, selectInput(inputId="machine", label="Sequencer", choices=c("NextSeq", "MiSeq"))),
+        column(4, selectInput(inputId="kit", label="Kit", 
+                              choices=c("DNA HT Dual Index Kit", "Other"))),
+        column(3, selectInput(inputId="set", "Set", 
+                              choices=c("96N Set A", "96N Set B", "96N Set C", 
+                                        "96N Set D", "24N"))),
+        column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
     ),
     
     tags$div(
@@ -109,7 +121,8 @@ ui <- fluidPage(
             tags$h3(" ")
         ),
         fluidRow(
-            column(4, conditionalPanel(condition = "true", rHandsontableOutput("index_in", width = 300))),
+            column(4, conditionalPanel(condition = "true", 
+                                       rHandsontableOutput("index_in", width = 300))),
             column(8, rHandsontableOutput("collisions"))
         ),
     )
@@ -173,9 +186,8 @@ server <- function(input, output) {
     
     
 }
-    
-
-    
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
