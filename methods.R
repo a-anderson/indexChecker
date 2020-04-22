@@ -8,6 +8,26 @@ checkDna <- function(string) {
   
 }
 
+# Construct table for index selection
+tableConstructor <- function() {
+  rows = c("A", "B", "C", "D", "E", "F", "G", "H")
+  plate = data.frame(matrix(ncol=12, nrow=8), row.names=rows)
+  colnames(plate) <- seq(1, 12)
+  plate[is.na(plate)] = FALSE
+  return(plate)
+}
+
+selectIndexToCheck <- function(booleanDF, sequenceDF) {
+  selectionMatrix <- which(booleanDF==TRUE, arr.ind=TRUE, useNames=TRUE)
+  sequences <- c()
+  numSamples <- nrow(selectionMatrix)
+  for (sample in 1:numSamples) {
+    sequence <- sequenceDF[selectionMatrix[sample, 'row'], selectionMatrix[sample,'col']]
+    sequences <- c(sequences, sequence)
+  }
+  return(sequences)
+}
+
 hammingDistance <- function(string1, string2) {
   # Calculate the hamming distance between 2 strings
   
@@ -35,15 +55,15 @@ checkIndex <- function(indexTable) {
   numIndices = nrow(indexTable)
   
   # loop over all indices
-  for (i in 1:numIndices-1) {
-    index1 = trimws(indexTable[i,1])
+  for (i in 1:(numIndices-1)) {
+    index1 = toupper(trimws(indexTable[i,1]))
     
     # ignore blank entry
     if (nchar(index1) == 0 ) next
     
-    for (j in i+1:numIndices) {
+    for (j in (i+1):numIndices) {
       
-      index2 = trimws(indexTable[j,1])
+      index2 = toupper(trimws(indexTable[j,1]))
       
       # ignore blank entry
       if (nchar(index2) == 0 ) next
@@ -51,18 +71,15 @@ checkIndex <- function(indexTable) {
       distance = hammingDistance(index1, index2)
       
       if (distance < 3) {
-        collision <- c(index1=i, index2=j, sequence1=index1, sequence2=index2, distance=distance)
+        collision <- c(index1=i, 
+                       index2=j, 
+                       sequence1=index1, 
+                       sequence2=index2, 
+                       distance=distance)
+        
         outputDF[nrow(outputDF) + 1, ] = collision
       }
     }
   }
   return(outputDF)
-}
-
-tableConstructor <- function() {
-  rows = c("A", "B", "C", "D", "E", "F", "G", "H")
-  plate = data.frame(matrix(ncol=12, nrow=8), row.names=rows)
-  colnames(plate) <- seq(1, 12)
-  plate[is.na(plate)] = FALSE
-  return(plate)
 }
