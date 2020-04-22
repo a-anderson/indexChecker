@@ -25,20 +25,22 @@ ui <- fluidPage(
     ),
     
     
+    # Kit, set and machine selection drop-down menus
     fluidRow(
         column(4, selectInput(inputId="kit", label="Kit", 
-                              choices=c("DNA HT Dual Index Kit", "Other"))),
+                              choices=c("DNA HT Dual Index Kit"))),
         column(3, selectInput(inputId="set", "Set", 
                               choices=c("96N Set A", "96N Set B", "96N Set C", 
                                         "96N Set D", "24N"))),
         column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
     ),
     
+    # Index location selection table
     tags$div(
         id="row-groups",
         fluidRow(
             column(9, rHandsontableOutput("kit_indices", width = 400)),
-            column(3, actionButton("add", "Add Indices to List"))
+            column(3, actionButton("add", "Add Index"))
         ),
     ),
     
@@ -53,6 +55,7 @@ ui <- fluidPage(
         tags$div(
             tags$h3(" ")
         ),
+        # index check and results tables
         fluidRow(
             column(4, conditionalPanel(condition = "true", 
                                        rHandsontableOutput("index_in", width = 300))),
@@ -70,6 +73,28 @@ server <- function(input, output) {
     output$kit_indices <- renderRHandsontable(
         rhandsontable(tableConstructor(), width = 800) %>%
             hot_cols(colWidths = 40)
+    )
+    
+    observeEvent(
+        # add selected indices in response to "Add Index" button
+        input$add,
+        {
+            direction <- machineDirection(input$machine)
+            seqDF <- dualIndexTable(input$set, direction)
+            selectionDF <- hot_to_r(input$kit_indices)
+            indices <- sequencesToAdd(selectionDF, seqDF)
+            numIndices <- length(indices)
+            
+            indexDF = na.omit(hot_to_r(input$index_in))
+            firstEmptyRow = match("", indexDF[,1])
+            indexDF[(firstEmptyRow):(firstEmptyRow+numIndices-1), 1] = indices
+            
+            output$index_in <- renderRHandsontable(
+                rhandsontable(indexDF, width = 400) %>%
+                    hot_cols(colWidths = 200))
+
+        }
+
     )
     
     indexIn = reactive({

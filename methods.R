@@ -11,6 +11,7 @@ checkDna <- function(string) {
 
 # Construct table for index selection
 tableConstructor <- function() {
+  # returns a dataframe to emulate a 96 well plate
   rows = c("A", "B", "C", "D", "E", "F", "G", "H")
   plate = data.frame(matrix(ncol=12, nrow=8), row.names=rows)
   colnames(plate) <- seq(1, 12)
@@ -19,6 +20,8 @@ tableConstructor <- function() {
 }
 
 machineDirection <- function(machine) {
+  # returns the direction, forward:"Forward" or reverse-complement:"Reverse",
+  # in which the selected machine will read an index
   direction <- case_when(
     machine == "NextSeq" ~ "Reverse", 
     machine == "MiSeq" ~ "Forward", 
@@ -31,13 +34,16 @@ machineDirection <- function(machine) {
 }
 
 dualIndexTable <- function(set, direction) {
+  # reads index tables in according to set and machine read direction
   fileLocation <- paste("data/DNA HT Dual Index Kit – ", set, " ", direction, ".csv", sep="")
   indexTable <- read.table(fileLocation, sep=",",header=TRUE, row.names=1, 
                            stringsAsFactors=FALSE, check.names=FALSE)
   return(indexTable)
 }
 
-selectIndexToCheck <- function(booleanDF, sequenceDF) {
+sequencesToAdd <- function(booleanDF, sequenceDF) {
+  # identify cells that have been checked in the display table
+  # and return a vector of the selected index sequences
   selectionMatrix <- which(booleanDF==TRUE, arr.ind=TRUE, useNames=TRUE)
   sequences <- c()
   numSamples <- nrow(selectionMatrix)
