@@ -1,6 +1,5 @@
 source('methods.R')
 library(shiny)
-library(DT)
 library(rhandsontable)
 
 # constants

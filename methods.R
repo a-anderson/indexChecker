@@ -1,4 +1,5 @@
 library(stringr)
+library(dplyr)
 
 checkDna <- function(string) {
   # check that characters are only a t c g or +
@@ -15,6 +16,25 @@ tableConstructor <- function() {
   colnames(plate) <- seq(1, 12)
   plate[is.na(plate)] = FALSE
   return(plate)
+}
+
+machineDirection <- function(machine) {
+  direction <- case_when(
+    machine == "NextSeq" ~ "Reverse", 
+    machine == "MiSeq" ~ "Forward", 
+    machine == "HiSeq 2000/2500" ~ "Forward", 
+    machine == "HiSeq 3000/4000" ~ "Reverse", 
+    machine == "MiniSeq" ~ "Reverse",
+    machine == "NovaSeq" ~ "Forward"
+  )
+  return(direction)
+}
+
+dualIndexTable <- function(set, direction) {
+  fileLocation <- paste("data/DNA HT Dual Index Kit – ", set, " ", direction, ".csv", sep="")
+  indexTable <- read.table(fileLocation, sep=",",header=TRUE, row.names=1, 
+                           stringsAsFactors=FALSE, check.names=FALSE)
+  return(indexTable)
 }
 
 selectIndexToCheck <- function(booleanDF, sequenceDF) {
