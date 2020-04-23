@@ -81,12 +81,27 @@ server <- function(input, output, session) {
             session, "set",
             label = "Set",
             choices = kitSets(input$kit)
-            
+        )
+        # remove ticks from index selection table
+        output$kit_indices <- renderRHandsontable(
+            rhandsontable(tableConstructor(), width = 800) %>%
+                hot_cols(colWidths = 40)
         )
     })
     
+    # remove ticks from index selection table set changes
     observeEvent(
-        # add selected indices in response to "Add Index" button
+        input$set,
+        {
+            output$kit_indices <- renderRHandsontable(
+                rhandsontable(tableConstructor(), width = 800) %>%
+                    hot_cols(colWidths = 40)
+            )
+        }
+    )
+    
+    # add selected indices in response to "Add Index" button
+    observeEvent(
         input$add,
         {
             direction <- machineDirection(input$machine)
@@ -99,6 +114,7 @@ server <- function(input, output, session) {
             firstEmptyRow = match("", indexDF[,1])
             indexDF[(firstEmptyRow):(firstEmptyRow+numIndices-1), 1] = indices
             
+            # update index table with selected indices
             output$index_in <- renderRHandsontable(
                 rhandsontable(indexDF, width = 400) %>%
                     hot_cols(colWidths = 200))
@@ -116,6 +132,7 @@ server <- function(input, output, session) {
         return(indexDF)
     })
     
+    # generate index table
     output$index_in <- renderRHandsontable(
         rhandsontable(indexIn(), width = 400) %>%
             hot_cols(colWidths = 200)
