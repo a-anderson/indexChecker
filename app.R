@@ -101,7 +101,7 @@ server <- function(input, output) {
         if (!is.null(input$index_in)) {
             indexDF = hot_to_r(input$index_in)
         } else {
-            indexDF = data.frame(index = rep("",50), stringsAsFactors = FALSE)
+            indexDF = data.frame(index = rep("",100), stringsAsFactors = FALSE)
         }
         return(indexDF)
     })

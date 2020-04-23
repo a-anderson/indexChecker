@@ -1,12 +1,13 @@
 library(stringr)
 library(dplyr)
 
-checkDna <- function(string) {
+isValidIndex <- function(string) {
   # check that characters are only a t c g or +
   # check that there is only one + in the string
   # if both both conditions satisfied, return TRUE
   # use regex
-  
+  validIndex <- grepl("^[ACTGactg]{6,8}\\+?[ACTGactg]{0,8}$", string)
+  return(validIndex)
 }
 
 # Construct table for index selection
@@ -86,6 +87,17 @@ checkIndex <- function(indexTable) {
     
     # ignore blank entry
     if (nchar(index1) == 0 ) next
+    
+    # test that index1 is a valid index
+    if (!isValidIndex(index1)) {
+      invalidRow <- c(index1=i, 
+                      index2=0, 
+                      sequence1=index1, 
+                      sequence2="<-- NOT VALID", 
+                      distance=0)
+      
+      outputDF[nrow(outputDF) + 1, ] = invalidRow
+    }
     
     for (j in (i+1):numIndices) {
       
