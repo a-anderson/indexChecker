@@ -1,6 +1,20 @@
 library(stringr)
 library(dplyr)
 
+kitSets <- function(kit) {
+  
+  if (kit=="DNA HT Dual Index Kit") {
+    return(c("96N Set A", "96N Set B", "96N Set C", 
+             "96N Set D", "24N"))
+  } else if (kit=="Lexogen") {
+    return(c("i7 Index Primers (7001-7096)", 
+             "i5 Index Primers (5001-5096)", 
+             "SRi7 Index Primers (Small RNA)"))
+  } else {
+    return(NULL)
+  }
+}
+
 isValidIndex <- function(string) {
   # check that characters are only a t c g or +
   # check that there is only one + in the string

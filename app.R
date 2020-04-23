@@ -28,8 +28,8 @@ ui <- fluidPage(
     # Kit, set and machine selection drop-down menus
     fluidRow(
         column(4, selectInput(inputId="kit", label="Kit", 
-                              choices=c("DNA HT Dual Index Kit"))),
-        column(3, selectInput(inputId="set", "Set", 
+                              choices=c("DNA HT Dual Index Kit", "Lexogen"))),
+        column(4, selectInput(inputId="set", "Set", 
                               choices=c("96N Set A", "96N Set B", "96N Set C", 
                                         "96N Set D", "24N"))),
         column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
@@ -68,12 +68,22 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
     
     output$kit_indices <- renderRHandsontable(
         rhandsontable(tableConstructor(), width = 800) %>%
             hot_cols(colWidths = 40)
     )
+    
+    # update set depending on selected kit
+    observe({
+        updateSelectInput(
+            session, "set",
+            label = "Set",
+            choices = kitSets(input$kit)
+            
+        )
+    })
     
     observeEvent(
         # add selected indices in response to "Add Index" button
