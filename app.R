@@ -5,9 +5,8 @@ library(rhandsontable)
 # constants
 seqMachines <- c("NextSeq", "MiSeq", "HiSeq 2000/2500", 
                  "HiSeq 3000/4000", "MiniSeq","NovaSeq")
+defaultSets <- c("96N Set A", "96N Set B", "96N Set C", "96N Set D")
 
-indexTable <- read.table("data/DNA HT Dual Index Kit – 96N Set A Forward.csv", sep=",",
-                         header=TRUE, row.names=1, stringsAsFactors=FALSE, check.names=FALSE)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -30,8 +29,7 @@ ui <- fluidPage(
         column(4, selectInput(inputId="kit", label="Kit", 
                               choices=c("DNA HT Dual Index Kit", "Lexogen"))),
         column(4, selectInput(inputId="set", "Set", 
-                              choices=c("96N Set A", "96N Set B", 
-                                        "96N Set C", "96N Set D"))),
+                              choices=defaultSets)),
         column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
     ),
     
