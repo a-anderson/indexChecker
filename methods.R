@@ -3,8 +3,8 @@ library(dplyr)
 kitSets <- function(kit) {
   
   if (kit=="DNA HT Dual Index Kit") {
-    return(c("96N Set A", "96N Set B", "96N Set C", 
-             "96N Set D", "24N"))
+    return(c("96N Set A", "96N Set B", 
+             "96N Set C", "96N Set D"))
   } else if (kit=="Lexogen") {
     return(c("i7 Index Primers (7001-7096)", 
              "i5 Index Primers (5001-5096)", 
