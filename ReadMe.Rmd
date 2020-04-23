@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This app compares your sample indices and tells you if they can't be sequenced together. This is determined by the Molecular Genomics Core requirement of having at least 3 different bases between indices.
 
-You can add indices either by selecting them from the kit and set you used, or you can enter them manually. You can enter indices in as upper or lower case (indexChecker converts them all to upper case automatically). 
+You can add indices either by selecting them from the kit and set you used, or you can enter them manually. You can enter indices in upper or lower case (indexChecker converts them all to upper case automatically). 
 
 **NOTE:** If choosing indices from the selection table please select the machine that will be used to sequence your samples. Indexes returned are the sequences that the MGC requires for your sequencing submissions.
 
@@ -23,17 +23,25 @@ You can add indices either by selecting them from the kit and set you used, or y
 
 #### Install R
 
+You can install R using PeterMac Self Service, or following the instructions here: <https://www.datacamp.com/community/tutorials/installing-R-windows-mac-ubuntu>
+
 #### Install R Studio
+
+You can install R Studio using PeterMac Self Service, or downloading from here: <https://rstudio.com/products/rstudio/download/> The free tier is fine.
 
 #### Install the libraries needed to run indexChecker
 
 Run the following commands in R Studio before running the app - they will install the packages you need.
 
-```{r setup, echo=FALSE}
+```{r installPackages, eval=FALSE}
 install.packages("dplyr")
 install.packages("shiny")
 install.packages("rhandsontable")
 ```
 This might take a while, but you will only need to do this once. When the installation is finished a > symbol and flashing cursor will show at the bottom of the console.
 
-**IMPORTANT: Do NOT move any of the files into different folders**
+#### Running the app
+
+Open the "app.R" file in R Studio. In the top right hand corner of the script there is a "> Run App" button. Press that button and the app will start up.
+
+**IMPORTANT: Do NOT move any of the files into different folders.**
