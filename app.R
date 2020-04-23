@@ -30,8 +30,8 @@ ui <- fluidPage(
         column(4, selectInput(inputId="kit", label="Kit", 
                               choices=c("DNA HT Dual Index Kit", "Lexogen"))),
         column(4, selectInput(inputId="set", "Set", 
-                              choices=c("96N Set A", "96N Set B", "96N Set C", 
-                                        "96N Set D", "24N"))),
+                              choices=c("96N Set A", "96N Set B", 
+                                        "96N Set C", "96N Set D"))),
         column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
     ),
     
@@ -90,7 +90,7 @@ server <- function(input, output, session) {
         input$add,
         {
             direction <- machineDirection(input$machine)
-            seqDF <- dualIndexTable(input$set, direction)
+            seqDF <- indexSequenceTable(input$kit, input$set, direction) # change here...
             selectionDF <- hot_to_r(input$kit_indices)
             indices <- sequencesToAdd(selectionDF, seqDF)
             numIndices <- length(indices)

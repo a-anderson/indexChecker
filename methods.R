@@ -49,11 +49,35 @@ machineDirection <- function(machine) {
 }
 
 dualIndexTable <- function(set, direction) {
-  # reads index tables in according to set and machine read direction
+  # reads in HT Dual Index tables in according to set and machine read direction
   fileLocation <- paste("data/DNA HT Dual Index Kit – ", set, " ", direction, ".csv", sep="")
   indexTable <- read.table(fileLocation, sep=",",header=TRUE, row.names=1, 
                            stringsAsFactors=FALSE, check.names=FALSE)
   return(indexTable)
+}
+
+lexogenTable <- function(set, direction) {
+  # reads in Lexogen index tables according to set and machine read direction
+  if (set == "i5 Index Primers (5001-5096)") {
+    fileLocation <- paste("data/Lexogen - ", set, " ", direction, ".csv", sep="")
+    print(fileLocation)
+  } else {
+    fileLocation <- paste("data/Lexogen - ", set, ".csv", sep="")
+  }
+  indexTable <- read.table(fileLocation, sep=",",header=TRUE, row.names=1, 
+                           stringsAsFactors=FALSE, check.names=FALSE)
+  return(indexTable)
+}
+
+indexSequenceTable <- function(kit, set, direction) {
+  # return the appropriate index sequence tables
+  if (kit == "DNA HT Dual Index Kit") {
+    return(dualIndexTable(set, direction))
+  } else if (kit == "Lexogen") {
+    return(lexogenTable(set, direction))
+  } else {
+    return(NULL)
+  }
 }
 
 sequencesToAdd <- function(booleanDF, sequenceDF) {
