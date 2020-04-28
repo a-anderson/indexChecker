@@ -169,7 +169,7 @@ server <- function(input, output, session) {
                 result$collisionCount = nrow(collisionTable)
 
                 if (result$collisionCount == 0) {
-                    collisionTable = data.frame(result=c("No collisions"))
+                    collisionTable = data.frame(Result=c("No collisions"))
                 }
                 result$collisionTable = collisionTable
             }
