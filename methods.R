@@ -92,6 +92,12 @@ sequencesToAdd <- function(booleanDF, sequenceDF) {
   return(sequences)
 }
 
+# set up a blank index table
+indexBlank <- function() {
+  blankDF <- data.frame(Index = rep("",100), stringsAsFactors = FALSE)
+  return(blankDF)
+}
+
 hammingDistance <- function(string1, string2) {
   # Calculate the hamming distance between 2 strings
   

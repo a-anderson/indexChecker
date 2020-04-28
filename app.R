@@ -8,12 +8,7 @@ seqMachines <- c("NextSeq", "MiSeq", "HiSeq 2000/2500",
 
 defaultSets <- c("96N Set A", "96N Set B", "96N Set C", "96N Set D")
 
-indexBlank <- function() {
-    blankDF <- data.frame(index = rep("",100), stringsAsFactors = FALSE)
-    return(blankDF)
-    }
-
-# Define UI for application that draws a histogram
+# Define UI for application 
 ui <- fluidPage(
     
     tags$head(
@@ -145,7 +140,7 @@ server <- function(input, output, session) {
             hot_cols(colWidths = 200)
     )
     
-    #generate collisions table
+    # generate collisions table
     output$collisions <- renderRHandsontable({
         outputTable = checkResult()
         rhandsontable(outputTable$collisionTable, readOnly=TRUE)
