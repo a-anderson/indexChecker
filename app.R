@@ -145,6 +145,12 @@ server <- function(input, output, session) {
             hot_cols(colWidths = 200)
     )
     
+    #generate collisions table
+    output$collisions <- renderRHandsontable({
+        outputTable = checkResult()
+        rhandsontable(outputTable$collisionTable, readOnly=TRUE)
+    })
+    
     # triggered by check button
     checkResult = reactive({
         input$check
@@ -152,16 +158,16 @@ server <- function(input, output, session) {
             result=list()
             result$collisionCount=0
             result$collisionTable=data.frame()
-            
+
             if (!is.null(input$collisions)) {
                 # get input data
                 inputTable=indexIn()
-                
+
                 # run collsion check
                 collisionTable = checkIndex(inputTable)
-                
+
                 result$collisionCount = nrow(collisionTable)
-                
+
                 if (result$collisionCount == 0) {
                     collisionTable = data.frame(result=c("No collisions"))
                 }
@@ -170,12 +176,19 @@ server <- function(input, output, session) {
             return(result)
         })
     })
+
+    # check button response
+    observeEvent(
+        input$check,
+        {
+            output$collisions <- renderRHandsontable({
+                outputTable = checkResult()
+                rhandsontable(outputTable$collisionTable, readOnly=TRUE)
+            }) 
+        }
+    )
     
-    output$collisions <- renderRHandsontable({
-        outputTable = checkResult()
-        rhandsontable(outputTable$collisionTable, readOnly=TRUE)
-    })
-    
+    # clear button response
     observeEvent(
         input$clear,
         {
@@ -187,6 +200,11 @@ server <- function(input, output, session) {
             output$collisions <- renderRHandsontable({
                 rhandsontable(data.frame(Check="Check Indices"), readOnly=TRUE)
             })
+            
+            output$kit_indices <- renderRHandsontable(
+                rhandsontable(tableConstructor(), width = 800) %>%
+                    hot_cols(colWidths = 40)
+            )
             
         }
     )
