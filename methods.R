@@ -4,7 +4,7 @@ kitSets <- function(kit) {
   
   if (kit=="DNA HT Dual Index Kit") {
     return(c("96N Set A", "96N Set B", 
-             "96N Set C", "96N Set D"))
+             "96N Set C",  "96N Set D"))
   } else if (kit=="Lexogen") {
     return(c("i7 Index Primers (7001-7096)", 
              "i5 Index Primers (5001-5096)", 
@@ -142,6 +142,9 @@ checkIndex <- function(indexTable) {
       
       # ignore blank entry
       if (nchar(index2) == 0 ) next
+      
+      # ignore comparisons between single and dual index
+      if ( abs(nchar(index1) - nchar(index2)) > 6) next
       
       distance = hammingDistance(index1, index2)
       

@@ -5,8 +5,13 @@ library(rhandsontable)
 # constants
 seqMachines <- c("NextSeq", "MiSeq", "HiSeq 2000/2500", 
                  "HiSeq 3000/4000", "MiniSeq","NovaSeq")
+
 defaultSets <- c("96N Set A", "96N Set B", "96N Set C", "96N Set D")
 
+indexBlank <- function() {
+    blankDF <- data.frame(index = rep("",100), stringsAsFactors = FALSE)
+    return(blankDF)
+    }
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -47,9 +52,13 @@ ui <- fluidPage(
         tags$h3(" ")
     ),
     
+    fluidRow(
+        column(2, actionButton("check", "Check Index")),
+        column(3, actionButton("clear", "Clear All"), offset=2)
+    ),
+    
     tags$div(
         id="row-groups",
-        actionButton("check", "Check Index"),
         tags$div(
             tags$h3(" ")
         ),
@@ -125,7 +134,7 @@ server <- function(input, output, session) {
         if (!is.null(input$index_in)) {
             indexDF = hot_to_r(input$index_in)
         } else {
-            indexDF = data.frame(index = rep("",100), stringsAsFactors = FALSE)
+            indexDF = indexBlank()
         }
         return(indexDF)
     })
@@ -166,6 +175,21 @@ server <- function(input, output, session) {
         outputTable = checkResult()
         rhandsontable(outputTable$collisionTable, readOnly=TRUE)
     })
+    
+    observeEvent(
+        input$clear,
+        {
+            output$index_in <- renderRHandsontable(
+                rhandsontable(indexBlank(), width = 400) %>%
+                    hot_cols(colWidths = 200)
+            )
+            
+            output$collisions <- renderRHandsontable({
+                rhandsontable(data.frame(Check="Check Indices"), readOnly=TRUE)
+            })
+            
+        }
+    )
     
     
 }
