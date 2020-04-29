@@ -16,14 +16,12 @@ kitSets <- function(kit) {
 
 isValidIndex <- function(string) {
   # check that characters are only a t c g or +
-  # check that there is only one + in the string
+  # check that there is only one or zero + in the string
   # if both both conditions satisfied, return TRUE
-  # use regex
   validIndex <- grepl("^[ACTGactg]{6,8}\\+?[ACTGactg]{0,8}$", string)
   return(validIndex)
 }
 
-# Construct table for index selection
 tableConstructor <- function() {
   # returns a dataframe to emulate a 96 well plate
   rows = c("A", "B", "C", "D", "E", "F", "G", "H")
@@ -124,8 +122,8 @@ sequencesToAdd <- function(booleanDF, sequenceDF, kit, set, machine) {
   return(addSequences[order(addSequences$Location),])
 }
 
-# set up a blank index table
 indexBlank <- function() {
+  # set up a blank index table for app display
   blankDF <- data.frame(Index=rep("",100), 
                         Kit=rep("",100), 
                         Set=rep("",100), 

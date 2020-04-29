@@ -8,7 +8,7 @@ seqMachines <- c("NextSeq", "MiSeq", "HiSeq 2000/2500",
 
 defaultSets <- c("96N Set A", "96N Set B", "96N Set C", "96N Set D")
 
-# Define UI for application 
+# define UI for application 
 ui <- fluidPage(
     
     tags$head(
@@ -24,7 +24,7 @@ ui <- fluidPage(
     ),
     
     
-    # Kit, set and machine selection drop-down menus
+    # kit, set and machine selection drop-down menus
     fluidRow(
         column(4, selectInput(inputId="kit", label="Kit", 
                               choices=c("DNA HT Dual Index Kit", "Lexogen"))),
@@ -33,7 +33,7 @@ ui <- fluidPage(
         column(3, selectInput(inputId="machine", label="Sequencer", choices=seqMachines)),
     ),
     
-    # Index location selection table
+    # index location selection table
     tags$div(
         id="row-groups",
         fluidRow(
@@ -73,11 +73,9 @@ ui <- fluidPage(
         ),
     )
     
-    
-    # downloadButton(outputId="download", label="Download")
 )
 
-# Define server logic required to draw a histogram
+# define server logic required for index compatibility checker
 server <- function(input, output, session) {
     
     output$kit_indices <- renderRHandsontable(
@@ -132,6 +130,7 @@ server <- function(input, output, session) {
 
     )
     
+    # function to generate index checker table 
     indexIn = reactive({
         if (!is.null(input$index_in)) {
             indexDF = hot_to_r(input$index_in)
@@ -148,7 +147,7 @@ server <- function(input, output, session) {
     
     # generate collisions table
     output$collisions <- renderRHandsontable({
-        rhandsontable(data.frame(Check="Check Indices"), readOnly=TRUE)
+        rhandsontable(data.frame(Check="Check Index"), readOnly=TRUE)
     })
     
     # triggered by check button
@@ -197,7 +196,7 @@ server <- function(input, output, session) {
             )
             
             output$collisions <- renderRHandsontable({
-                rhandsontable(data.frame(Check="Check Indices"), readOnly=TRUE)
+                rhandsontable(data.frame(Check="Check Index"), readOnly=TRUE)
             })
             
             output$kit_indices <- renderRHandsontable(
@@ -208,6 +207,7 @@ server <- function(input, output, session) {
         }
     )
     
+    # download button response
     output$download <- downloadHandler(
         filename = function() {
             paste("index-check-", Sys.Date(), ".csv", sep="")
