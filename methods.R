@@ -79,22 +79,59 @@ indexSequenceTable <- function(kit, set, direction) {
   }
 }
 
-sequencesToAdd <- function(booleanDF, sequenceDF) {
-  # identify cells that have been checked in the display table
-  # and return a vector of the selected index sequences
-  selectionMatrix <- which(booleanDF==TRUE, arr.ind=TRUE, useNames=TRUE)
-  sequences <- c()
-  numSamples <- nrow(selectionMatrix)
-  for (sample in 1:numSamples) {
-    sequence <- sequenceDF[selectionMatrix[sample, 'row'], selectionMatrix[sample,'col']]
-    sequences <- c(sequences, sequence)
+locationStrings <- function(rowNumber, colNumber) {
+  # return a string of row,column locations which can be easily sorted
+  
+  rowLetters <- c("A", "B", "C", "D", "E", "F", "G", "H")
+  
+  if (colNumber < 10) {
+    column = paste(0, colNumber, sep="")
+  } else {
+    column = colNumber
   }
-  return(sequences)
+  location <- paste(rowLetters[rowNumber], column, sep="")
+  return(location)
+}
+
+sequencesToAdd <- function(booleanDF, sequenceDF, kit, set, machine) {
+  # identify cells that have been checked in the display table
+  # and return a dataframe of the selected index sequences and their origin
+  selectionMatrix <- which(booleanDF==TRUE, arr.ind=TRUE, useNames=TRUE)
+  
+  numSamples <- nrow(selectionMatrix)
+  addSequences <- data.frame(Index=character(), 
+                          Kit=character(), 
+                          Set=character(), 
+                          Location=character(), 
+                          Machine=character(),
+                          stringsAsFactors = FALSE)
+  
+  
+  
+  for (sample in 1:numSamples) {
+    rowNumber = selectionMatrix[sample, 'row']
+    colNumber = selectionMatrix[sample,'col']
+    
+    location <- locationStrings(rowNumber, colNumber)
+    
+    sequence <- sequenceDF[rowNumber, colNumber]
+    addSequences[sample, ] <- c(Index=sequence, 
+                              Kit=kit, 
+                              Set=set, 
+                              Location=location, 
+                              Machine=machine)
+  }
+  return(addSequences[order(addSequences$Location),])
 }
 
 # set up a blank index table
 indexBlank <- function() {
-  blankDF <- data.frame(Index = rep("",100), stringsAsFactors = FALSE)
+  blankDF <- data.frame(Index=rep("",100), 
+                        Kit=rep("",100), 
+                        Set=rep("",100), 
+                        Location=rep("",100), 
+                        Machine=rep("",100), 
+                        stringsAsFactors = FALSE)
   return(blankDF)
 }
 
@@ -115,11 +152,11 @@ hammingDistance <- function(string1, string2) {
 checkIndex <- function(indexTable) {
   # Compare differences between all indices in a table
   
-  outputDF = data.frame(index1=integer(), 
-                        index2=integer(), 
-                        sequence1=character(), 
-                        sequence2=character(),
-                        distance=integer(),
+  outputDF = data.frame(Index1=integer(), 
+                        Index2=integer(), 
+                        Sequence1=character(), 
+                        Sequence2=character(),
+                        Distance=integer(),
                         stringsAsFactors=FALSE)
   
   numIndices = nrow(indexTable)
@@ -133,11 +170,11 @@ checkIndex <- function(indexTable) {
     
     # test that index1 is a valid index
     if (!isValidIndex(index1)) {
-      invalidRow <- c(index1=i, 
-                      index2=0, 
-                      sequence1=index1, 
-                      sequence2="<-- NOT VALID", 
-                      distance=0)
+      invalidRow <- c(Index1=i, 
+                      Index2=0, 
+                      Sequence1=index1, 
+                      Sequence2="<-- NOT VALID", 
+                      Distance=0)
       
       outputDF[nrow(outputDF) + 1, ] = invalidRow
     }
@@ -155,11 +192,11 @@ checkIndex <- function(indexTable) {
       distance = hammingDistance(index1, index2)
       
       if (distance < 3) {
-        collision <- c(index1=i, 
-                       index2=j, 
-                       sequence1=index1, 
-                       sequence2=index2, 
-                       distance=distance)
+        collision <- c(Index1=i, 
+                       Index2=j, 
+                       Sequence1=index1, 
+                       Sequence2=index2, 
+                       Distance=distance)
         
         outputDF[nrow(outputDF) + 1, ] = collision
       }

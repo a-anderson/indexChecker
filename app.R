@@ -37,7 +37,7 @@ ui <- fluidPage(
     tags$div(
         id="row-groups",
         fluidRow(
-            column(9, rHandsontableOutput("kit_indices", width = 400)),
+            column(8, rHandsontableOutput("kit_indices", width = 400)),
             column(3, actionButton("add", "Add Index"))
         ),
     ),
@@ -48,8 +48,17 @@ ui <- fluidPage(
     ),
     
     fluidRow(
+        column(9, rHandsontableOutput("collisions")),
+    ),
+    
+    tags$div(
+        id="row-groups",
+        tags$h3(" ")
+    ),
+    
+    fluidRow(
         column(2, actionButton("check", "Check Index")),
-        column(3, actionButton("clear", "Clear All"), offset=2)
+        column(2, actionButton("clear", "Clear All")),
     ),
     
     tags$div(
@@ -59,9 +68,7 @@ ui <- fluidPage(
         ),
         # index check and results tables
         fluidRow(
-            column(4, conditionalPanel(condition = "true", 
-                                       rHandsontableOutput("index_in", width = 300))),
-            column(8, rHandsontableOutput("collisions"))
+            column(12, rHandsontableOutput("index_in")),
         ),
     )
     
@@ -107,20 +114,19 @@ server <- function(input, output, session) {
         input$add,
         {
             direction <- machineDirection(input$machine)
-            seqDF <- indexSequenceTable(input$kit, input$set, direction) # change here...
+            seqDF <- indexSequenceTable(input$kit, input$set, direction) 
             selectionDF <- hot_to_r(input$kit_indices)
-            indices <- sequencesToAdd(selectionDF, seqDF)
-            numIndices <- length(indices)
+            indices <- sequencesToAdd(selectionDF, seqDF, input$kit, input$set, input$machine)
+            numIndices <- nrow(indices)
             
-            indexDF = na.omit(hot_to_r(input$index_in))
-            firstEmptyRow = match("", indexDF[,1])
-            indexDF[(firstEmptyRow):(firstEmptyRow+numIndices-1), 1] = indices
+            indexDF = na.omit(hot_to_r(input$index_in), target.colnames="Index")
+            firstEmptyRow = match("", indexDF[,"Index"])
+            indexDF[(firstEmptyRow):(firstEmptyRow+numIndices-1), ] = indices
             
             # update index table with selected indices
             output$index_in <- renderRHandsontable(
-                rhandsontable(indexDF, width = 400) %>%
-                    hot_cols(colWidths = 200))
-
+                rhandsontable(indexDF, width = 800)
+            )
         }
 
     )
@@ -136,14 +142,12 @@ server <- function(input, output, session) {
     
     # generate index table
     output$index_in <- renderRHandsontable(
-        rhandsontable(indexIn(), width = 400) %>%
-            hot_cols(colWidths = 200)
+        rhandsontable(indexIn(), width = 800)
     )
     
     # generate collisions table
     output$collisions <- renderRHandsontable({
-        outputTable = checkResult()
-        rhandsontable(outputTable$collisionTable, readOnly=TRUE)
+        rhandsontable(data.frame(Check="Check Indices"), readOnly=TRUE)
     })
     
     # triggered by check button
@@ -188,8 +192,7 @@ server <- function(input, output, session) {
         input$clear,
         {
             output$index_in <- renderRHandsontable(
-                rhandsontable(indexBlank(), width = 400) %>%
-                    hot_cols(colWidths = 200)
+                rhandsontable(indexBlank(), width = 800) 
             )
             
             output$collisions <- renderRHandsontable({
