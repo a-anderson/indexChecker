@@ -58,7 +58,8 @@ ui <- fluidPage(
     
     fluidRow(
         column(2, actionButton("check", "Check Index")),
-        column(2, actionButton("clear", "Clear All")),
+        column(2, actionButton("clear", "Clear All"), offset=1),
+        column(2, downloadButton(outputId="download", label="Download"), offset=1)
     ),
     
     tags$div(
@@ -207,6 +208,14 @@ server <- function(input, output, session) {
         }
     )
     
+    output$download <- downloadHandler(
+        filename = function() {
+            paste("index-check-", Sys.Date(), ".csv", sep="")
+        },
+        content=function(file) {
+            write.csv(indexIn(), file)
+        }
+    )
     
 }
 
