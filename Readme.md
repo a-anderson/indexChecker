@@ -10,7 +10,13 @@ You can add indices either by selecting them from the kit and set you used, or y
 
 **NOTE:** If choosing indices from the selection table please select the machine that will be used to sequence your samples.
 
+## Example with no collisions:
+
 ![Example](index_checker.png)
+
+## Example with collisions:
+
+![Example collisions](index_checker_collisions.png)
 
 ## How to run
 
@@ -35,5 +41,3 @@ docker run -p 3838:3838 index_checker
 ```
 
 3. Open your browser and paste http://localhost:3838/ into the address bar.
-
-![Example collisions](index_checker_collisions.png)
