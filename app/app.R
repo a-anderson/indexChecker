@@ -15,11 +15,10 @@ ui <- fluidPage(
         tags$link(rel = "stylesheet",
                   type = "text/css",
                   href = "style.css"),
-        tags$h1("Dawson Lab"),
+        tags$h1("DNA Sequencing"),
     ),
     
     tags$div(
-        id="row-groups",
         tags$h3("Index Compatibility Checker")
     ),
     
@@ -35,7 +34,6 @@ ui <- fluidPage(
     
     # index location selection table
     tags$div(
-        id="row-groups",
         fluidRow(
             column(8, rHandsontableOutput("kit_indices", width = 400)),
             column(3, actionButton("add", "Add Index"))
@@ -43,7 +41,6 @@ ui <- fluidPage(
     ),
     
     tags$div(
-        id="row-groups",
         tags$h3(" ")
     ),
     
@@ -52,7 +49,6 @@ ui <- fluidPage(
     ),
     
     tags$div(
-        id="row-groups",
         tags$h3(" ")
     ),
     
@@ -63,7 +59,6 @@ ui <- fluidPage(
     ),
     
     tags$div(
-        id="row-groups",
         tags$div(
             tags$h3(" ")
         ),
