@@ -35,3 +35,5 @@ docker run -p 3838:3838 index_checker
 ```
 
 3. Open your browser and paste http://localhost:3838/ into the address bar.
+
+![Example collisions](index_checker_collisions.png)
