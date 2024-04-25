@@ -10,6 +10,8 @@ You can add indices either by selecting them from the kit and set you used, or y
 
 **NOTE:** If choosing indices from the selection table please select the machine that will be used to sequence your samples.
 
+![Example](index_checker.png)
+
 ## How to run
 
 1. Build the dockerfile using the following command from the command line:
